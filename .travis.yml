@@ -1,0 +1,22 @@
+language: rust
+rust:
+  - stable
+  - beta
+  - nightly
+
+branches:
+  only:
+  - master
+
+cache: cargo
+
+script:
+  # Copy testing env file if one exists
+  - if [[ -f .env.testing ]]; then cp .env.testing .env; fi
+
+  # Build
+  - cargo build --verbose
+
+  # Test
+  - cargo test --verbose
+
