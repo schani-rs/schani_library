@@ -8,14 +8,27 @@ branches:
   only:
   - master
 
+services:
+  - docker
+
 cache: cargo
 
-script:
+install:
+  - cargo install diesel_cli || true
+  - diesel --version
+
+before_script:
   # Copy testing env file if one exists
   - if [[ -f .env.testing ]]; then cp .env.testing .env; fi
 
+  - docker run --name schani_library_db --env-file .env -p 5432:5432 -d postgres
+
+script:
   # Build
   - cargo build --verbose
+
+  # Run db migrations
+  - diesel migration run
 
   # Test
   - cargo test --verbose
