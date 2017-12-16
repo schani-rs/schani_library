@@ -29,6 +29,8 @@ script:
 
   # Run db migrations
   - diesel migration run
+  # Also test rollbacks
+  - diesel migration redo
 
   # Test
   - cargo test --verbose
