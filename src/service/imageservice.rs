@@ -28,4 +28,14 @@ impl ImageService {
             .get_result(conn)
             .expect("Error adding image"))
     }
+
+    pub fn update_image(&self, conn: &PgConnection, image: Image) -> Result<Image, ()> {
+        use database::schema::images::dsl::*;
+
+        Ok(diesel::update(images.find(image.id))
+            .set((raw_id.eq(image.raw_id), image_id.eq(image.image_id)))
+            .filter(user_id.eq(image.user_id))
+            .get_result::<Image>(conn)
+            .expect("Error updating image"))
+    }
 }
