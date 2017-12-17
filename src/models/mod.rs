@@ -15,3 +15,9 @@ pub struct NewImage {
     pub image_id: Option<String>,
     pub user_id: i32,
 }
+
+pub struct UpdateImage {
+    pub id: i32,
+    pub raw_id: Option<String>,
+    pub image_id: Option<String>,
+}

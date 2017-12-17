@@ -2,7 +2,7 @@ use diesel;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 
-use models::{Image, NewImage};
+use models::{Image, NewImage, UpdateImage};
 
 pub struct ImageService;
 
@@ -11,13 +11,19 @@ impl ImageService {
         ImageService {}
     }
 
+    pub fn get_images(&self, conn: &PgConnection) -> Result<Vec<Image>, ()> {
+        use database::schema::images::dsl::*;
+
+        Ok(images.load::<Image>(conn).expect("Error loading images"))
+    }
+
     pub fn get_user_images(&self, conn: &PgConnection, user_id_q: i32) -> Result<Vec<Image>, ()> {
         use database::schema::images::dsl::*;
 
         Ok(images
             .filter(user_id.eq(user_id_q))
             .load::<Image>(conn)
-            .expect("Error loading images"))
+            .expect("Error loading user images"))
     }
 
     pub fn add_image(&self, conn: &PgConnection, image: NewImage) -> Result<Image, ()> {
@@ -29,12 +35,11 @@ impl ImageService {
             .expect("Error adding image"))
     }
 
-    pub fn update_image(&self, conn: &PgConnection, image: Image) -> Result<Image, ()> {
+    pub fn update_image(&self, conn: &PgConnection, image: UpdateImage) -> Result<Image, ()> {
         use database::schema::images::dsl::*;
 
         Ok(diesel::update(images.find(image.id))
             .set((raw_id.eq(image.raw_id), image_id.eq(image.image_id)))
-            .filter(user_id.eq(image.user_id))
             .get_result::<Image>(conn)
             .expect("Error updating image"))
     }

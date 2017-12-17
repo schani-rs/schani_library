@@ -6,7 +6,7 @@ use gotham::middleware::pipeline::new_pipeline;
 use gotham_middleware_diesel::DieselMiddleware;
 use hyper::Method;
 
-use super::extractors::{UserImageRequestPath, UserImagesRequestPath};
+use super::extractors::{ImageRequestPath, ImagesQueryString};
 use super::handlers::ImageController;
 use super::middlewares::ImageServiceMiddleware;
 
@@ -26,16 +26,13 @@ pub fn build_app_router(datbase_url: &str) -> Router {
     trace!("finalize router");
     build_router(default_pipeline_chain, pipelines, |route| {
         route
-            .get("/user/:user_id/images")
-            .with_path_extractor::<UserImagesRequestPath>()
+            .get("/images")
+            .with_query_string_extractor::<ImagesQueryString>()
             .to(ImageController::get_user_images);
+        route.post("/images").to(ImageController::add_image);
         route
-            .post("/user/:user_id/images")
-            .with_path_extractor::<UserImagesRequestPath>()
-            .to(ImageController::add_image);
-        route
-            .request(vec![Method::Put], "/user/:user_id/images/:id")
-            .with_path_extractor::<UserImageRequestPath>()
-            .to(ImageController::updated_image);
+            .request(vec![Method::Put], "/images/:id")
+            .with_path_extractor::<ImageRequestPath>()
+            .to(ImageController::update_image);
     })
 }

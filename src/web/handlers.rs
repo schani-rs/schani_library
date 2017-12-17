@@ -1,3 +1,5 @@
+use std::convert::Into;
+
 use futures::{future, Future, Stream};
 use gotham::handler::{HandlerFuture, IntoHandlerError};
 use gotham::http::response::create_response;
@@ -7,31 +9,39 @@ use hyper::{Body, StatusCode};
 use mime;
 use serde_json;
 
-use models::{Image, NewImage};
-use web::extractors::{UserImageRequestPath, UserImagesRequestPath};
+use models::{NewImage, UpdateImage};
+use web::extractors::{ImageRequestPath, ImagesQueryString};
 use web::middlewares::ImageServiceMiddlewareData;
 
 pub struct ImageController;
 
 #[derive(Deserialize)]
-struct ImageRequestBody {
+struct NewImageRequestBody {
+    raw_id: Option<String>,
+    image_id: Option<String>,
+    user_id: i32,
+}
+
+impl Into<NewImage> for NewImageRequestBody {
+    fn into(self) -> NewImage {
+        NewImage {
+            raw_id: self.raw_id,
+            image_id: self.image_id,
+            user_id: self.user_id,
+        }
+    }
+}
+
+#[derive(Deserialize)]
+struct UpdateImageRequestBody {
     raw_id: Option<String>,
     image_id: Option<String>,
 }
 
-impl ImageRequestBody {
-    pub fn into_new_image(self, user_id: i32) -> NewImage {
-        NewImage {
-            user_id: user_id,
-            raw_id: self.raw_id,
-            image_id: self.image_id,
-        }
-    }
-
-    pub fn into_image(self, id: i32, user_id: i32) -> Image {
-        Image {
+impl UpdateImageRequestBody {
+    pub fn into(self, id: i32) -> UpdateImage {
+        UpdateImage {
             id: id,
-            user_id: user_id,
             raw_id: self.raw_id,
             image_id: self.image_id,
         }
@@ -45,11 +55,14 @@ impl ImageController {
                 state.borrow::<ImageServiceMiddlewareData>();
             let conn = connection(&state);
 
-            let p: &UserImagesRequestPath = UserImagesRequestPath::borrow_from(&state);
-            image_service
-                .service()
-                .get_user_images(&conn, p.user_id())
-                .unwrap()
+            let p: &ImagesQueryString = ImagesQueryString::borrow_from(&state);
+            match p.user_id() {
+                Some(user_id) => image_service
+                    .service()
+                    .get_user_images(&conn, user_id)
+                    .unwrap(),
+                None => image_service.service().get_images(&conn).unwrap(),
+            }
         };
 
         let json = serde_json::to_string(&images).unwrap();
@@ -69,9 +82,8 @@ impl ImageController {
                 Ok(json_chunk) => {
                     let bytes = json_chunk.to_vec();
                     let json = String::from_utf8(bytes).unwrap();
-                    let body: ImageRequestBody = serde_json::from_str(json.as_str()).unwrap();
-                    let user_id = UserImagesRequestPath::borrow_from(&state).user_id();
-                    let new_image = body.into_new_image(user_id);
+                    let body: NewImageRequestBody = serde_json::from_str(json.as_str()).unwrap();
+                    let new_image = body.into();
 
                     let image = {
                         let image_service: &ImageServiceMiddlewareData =
@@ -96,20 +108,18 @@ impl ImageController {
         Box::new(f)
     }
 
-    pub fn updated_image(mut state: State) -> Box<HandlerFuture> {
+    pub fn update_image(mut state: State) -> Box<HandlerFuture> {
         let f = Body::take_from(&mut state)
             .concat2()
             .then(move |raw_body| match raw_body {
                 Ok(json_chunk) => {
                     let bytes = json_chunk.to_vec();
                     let json = String::from_utf8(bytes).unwrap();
-                    let body: ImageRequestBody = serde_json::from_str(json.as_str()).unwrap();
+                    let body: UpdateImageRequestBody = serde_json::from_str(json.as_str()).unwrap();
 
                     let image = {
-                        let path_data = UserImageRequestPath::borrow_from(&state);
-                        let id = path_data.id();
-                        let user_id = path_data.user_id();
-                        let image = body.into_image(id, user_id);
+                        let id = ImageRequestPath::borrow_from(&state).id();
+                        let image = body.into(id);
 
                         let image_service: &ImageServiceMiddlewareData =
                             state.borrow::<ImageServiceMiddlewareData>();
