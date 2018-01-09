@@ -1,0 +1,2 @@
+ALTER TABLE images
+  ADD COLUMN sidecar_id CHAR(128) NULL
