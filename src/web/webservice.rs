@@ -38,7 +38,7 @@ impl<'a> LibraryWebService<'a> {
     pub fn run(self) {
         self.set_logging();
 
-        let addr = "0.0.0.0:8000".parse().unwrap();
+        let addr = "0.0.0.0:8002".parse().unwrap();
         trace!("create router");
         let router = build_app_router(self.database_url);
         trace!("create server");
@@ -46,7 +46,7 @@ impl<'a> LibraryWebService<'a> {
             .bind(&addr, NewHandlerService::new(router))
             .unwrap();
 
-        info!("server listening on 0.0.0.0:8000");
+        info!("server listening on {}", addr);
         server.run().unwrap();
     }
 }
