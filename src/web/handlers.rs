@@ -18,6 +18,7 @@ pub struct ImageController;
 #[derive(Deserialize)]
 struct NewImageRequestBody {
     raw_id: Option<String>,
+    sidecar_id: Option<String>,
     image_id: Option<String>,
     user_id: i32,
 }
@@ -26,6 +27,7 @@ impl Into<NewImage> for NewImageRequestBody {
     fn into(self) -> NewImage {
         NewImage {
             raw_id: self.raw_id,
+            sidecar_id: self.sidecar_id,
             image_id: self.image_id,
             user_id: self.user_id,
         }
@@ -35,6 +37,7 @@ impl Into<NewImage> for NewImageRequestBody {
 #[derive(Deserialize)]
 struct UpdateImageRequestBody {
     raw_id: Option<String>,
+    sidecar_id: Option<String>,
     image_id: Option<String>,
 }
 
@@ -43,6 +46,7 @@ impl UpdateImageRequestBody {
         UpdateImage {
             id: id,
             raw_id: self.raw_id,
+            sidecar_id: self.sidecar_id,
             image_id: self.image_id,
         }
     }
