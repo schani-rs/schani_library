@@ -29,6 +29,10 @@ pub fn build_app_router(datbase_url: &str) -> Router {
             .get("/images")
             .with_query_string_extractor::<ImagesQueryString>()
             .to(ImageController::get_user_images);
+        route
+            .get("/images/:id")
+            .with_path_extractor::<ImageRequestPath>()
+            .to(ImageController::get_image);
         route.post("/images").to(ImageController::add_image);
         route
             .request(vec![Method::Put], "/images/:id")

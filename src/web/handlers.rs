@@ -79,6 +79,26 @@ impl ImageController {
         Box::new(future::ok((state, resp)))
     }
 
+    pub fn get_image(state: State) -> Box<HandlerFuture> {
+        let images = {
+            let image_service: &ImageServiceMiddlewareData =
+                state.borrow::<ImageServiceMiddlewareData>();
+            let conn = connection(&state);
+            let id = ImageRequestPath::borrow_from(&state).id();
+
+            image_service.service().get_image(&conn, id).unwrap()
+        };
+
+        let json = serde_json::to_string(&images).unwrap();
+
+        let resp = create_response(
+            &state,
+            StatusCode::Ok,
+            Some((json.into_bytes(), mime::APPLICATION_JSON)),
+        );
+        Box::new(future::ok((state, resp)))
+    }
+
     pub fn add_image(mut state: State) -> Box<HandlerFuture> {
         let f = Body::take_from(&mut state)
             .concat2()

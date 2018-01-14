@@ -17,6 +17,15 @@ impl ImageService {
         Ok(images.load::<Image>(conn).expect("Error loading images"))
     }
 
+    pub fn get_image(&self, conn: &PgConnection, img_id: i32) -> Result<Image, ()> {
+        use database::schema::images::dsl::*;
+
+        Ok(images
+            .find(img_id)
+            .get_result(conn)
+            .expect("Error loading images"))
+    }
+
     pub fn get_user_images(&self, conn: &PgConnection, user_id_q: i32) -> Result<Vec<Image>, ()> {
         use database::schema::images::dsl::*;
 
