@@ -220,10 +220,10 @@ dependencies = [
 
 [[package]]
 name = "fern"
-version = "0.4.3"
+version = "0.5.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "log 0.3.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "log 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -672,7 +672,7 @@ dependencies = [
  "diesel 1.0.0-beta1 (registry+https://github.com/rust-lang/crates.io-index)",
  "diesel_infer_schema 1.0.0-beta1 (registry+https://github.com/rust-lang/crates.io-index)",
  "dotenv 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "fern 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "fern 0.5.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "futures 0.1.20 (registry+https://github.com/rust-lang/crates.io-index)",
  "gotham 0.1.2 (git+https://github.com/gotham-rs/gotham.git?branch=router-builder)",
  "gotham_derive 0.1.0 (git+https://github.com/gotham-rs/gotham.git?branch=router-builder)",
@@ -994,7 +994,7 @@ dependencies = [
 "checksum dtoa 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)" = "09c3753c3db574d215cba4ea76018483895d7bff25a31b49ba45db21c48e50ab"
 "checksum error-chain 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)" = "d9435d864e017c3c6afeac1654189b06cdb491cf2ff73dbf0d73b0f292f42ff8"
 "checksum error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)" = "ff511d5dc435d703f4971bc399647c9bc38e20cb41452e3b9feb4765419ed3f3"
-"checksum fern 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)" = "1f0297637852905c7ce4cefd8d8a6719f6e3cfb22e2e9f0aa0650f4804a6f360"
+"checksum fern 0.5.5 (registry+https://github.com/rust-lang/crates.io-index)" = "de237898aa785d93b869e965132f62a525b90cce5c0bf2a395f03e62e085bc5c"
 "checksum fuchsia-zircon 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "f6c0581a4e363262e52b87f59ee2afe3415361c6ec35e665924eb08afe8ff159"
 "checksum fuchsia-zircon-sys 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "43f3795b4bae048dc6123a6b972cadde2e676f9ded08aef6bb77f5f157684a82"
 "checksum futures 0.1.20 (registry+https://github.com/rust-lang/crates.io-index)" = "0c5a3176836efa0b37f0e321b86672dfada1564aeb516fbed67b7c24050a0263"
