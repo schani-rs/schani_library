@@ -1,4 +1,4 @@
-FROM rust:1.25.0
+FROM rust:1.26.0
 RUN cargo install diesel_cli
 WORKDIR /usr/src/myapp
 COPY . .
