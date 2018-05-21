@@ -5,7 +5,7 @@ authors = ["Christoph Wurst <christoph@winzerhof-wurst.at>"]
 
 [dependencies]
 diesel = { version = "1.0.0-beta1", features = ["postgres"] }
-diesel_infer_schema = { version = "1.0.0-beta1", features = ["postgres"] }
+diesel_infer_schema = { version = "1.2.0", features = ["postgres"] }
 dotenv = "0.11.0"
 fern = "*"
 futures = "*"
